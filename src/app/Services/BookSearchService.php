@@ -14,7 +14,39 @@ class BookSearchService {
 
   public function search2isbn(ResultRequest $request): array|bool
   {
-    return false;
+    $isbns = [];
+    // ISBNコード
+    $isbn = $request->input('isbn');
+    if (!empty($isbn)) {
+      $isbns[] = $isbn;
+    }
+
+    // 書籍名
+    $book_name = $request->input('book_name');
+    if (!empty($book_name)) {
+      // 検索URLを生成
+      $searchUrl = "{$this->base_url}/api/opensearch?title={$book_name}&cnt=20";
+      $response = Http::get($searchUrl);
+      if (!$response->successful()) {
+        return false;
+      }
+      $xml = simplexml_load_string($response->body(), 'SimpleXMLElement', LIBXML_NOCDATA);
+      foreach($xml->channel->item as $item) {
+        foreach($item->children('http://purl.org/dc/elements/1.1/')->identifier as $identifier) {
+          $attrs = $identifier->attributes('xsi', true);
+          foreach($attrs as $key => $attr) {
+            if ($attr->__toString() === "dcndl:ISBN") {
+              $isbns[] = $identifier->__toString();
+            }
+            if ($attr->__toString() === "dcndl:ISBN13") {
+              $isbns[] = $identifier->__toString();
+            }
+          }
+        }
+      }
+    }
+
+    return $isbns;
   }
 
   public function image(string $isbn): array
