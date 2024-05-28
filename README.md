@@ -23,3 +23,18 @@
 
 * ISBN検索  国立国会図書館サーチ  
 [https://ndlsearch.ndl.go.jp/](https://ndlsearch.ndl.go.jp/)
+
+## 初期設定
+~~~sh
+## composerのインストール 
+$ composer install
+## Laravelのセットアップ
+$ cp -rip .env.example .env
+$ php artisan key:generate
+~~~
+### envファイルの修正
+* DB設定を削除
+* 下記環境を追加
+  * SESSION_DRIVER=file
+  * CALIL_APP_KEY= カーリルから発行されたAPIキーを指定
+  * GOOGLE_APP_API= Google Map API（Map for javaScript）が使えるAPIキーを指定
