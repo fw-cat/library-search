@@ -12,12 +12,13 @@ class BookSearchService {
 
   private $base_url = 'https://ndlsearch.ndl.go.jp';
 
-  public function search2isbn(ResultRequest $request): array|bool
+  public function searchBooks(ResultRequest $request): array|bool
   {
-    $isbns = [];
+    $books = [];
     // ISBNコード
     $isbn = $request->input('isbn');
     if (!empty($isbn)) {
+      // TODO: ISBNから書籍情報を取得
       $isbns[] = $isbn;
     }
 
@@ -32,21 +33,27 @@ class BookSearchService {
       }
       $xml = simplexml_load_string($response->body(), 'SimpleXMLElement', LIBXML_NOCDATA);
       foreach($xml->channel->item as $item) {
+        $book = [
+          'title' => $item->title,
+          'author' => $item->author,
+          'published' => $item->pubDate,
+        ];
         foreach($item->children('http://purl.org/dc/elements/1.1/')->identifier as $identifier) {
           $attrs = $identifier->attributes('xsi', true);
           foreach($attrs as $key => $attr) {
             if ($attr->__toString() === "dcndl:ISBN") {
-              $isbns[] = $identifier->__toString();
+              $book['isbn'] = $identifier->__toString();
             }
             if ($attr->__toString() === "dcndl:ISBN13") {
-              $isbns[] = $identifier->__toString();
+              $book['isbn'] = $identifier->__toString();
             }
           }
         }
+        $books[] = $book;
       }
     }
 
-    return $isbns;
+    return $books;
   }
 
   public function image(string $isbn): array

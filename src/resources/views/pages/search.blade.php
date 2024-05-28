@@ -40,12 +40,34 @@
   <div class="m-3 w-100"></div>
   @if(!empty($search_word))
   <div class="col-6">
-    @if (!empty($books))
-    @else
-    <div class="alert alert-warning" role="alert">
-      <i class="fa-regular fa-face-sad-tear"></i>書籍がヒットしませんでした
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">蔵書の検索結果</h5>
+        <p><strong>{{ $search_word }}</strong>の蔵書を検索</p>
+      </div>
+      @if(!empty($books))
+      <div class="row gy-5">
+        @foreach($books as $book)
+          <div class="col-6">
+            <div class="card">
+              <img src="{{ route('book.image', ['isbn' => $book['isbn'] ?? 'noimage']) }}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">{{ $book['title'] }}</h5>
+                <p class="card-text">著者：{{ $book['author'] }}</p>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+      @else
+      <div class="card-body">
+        <div class="alert alert-warning" role="alert">
+          <i class="fa-regular fa-face-sad-tear"></i>
+          対象の図書館に蔵書はありませんでした。
+        </div>
+      </div>
+      @endif
     </div>
-    @endif
   </div>
   @endif
 </div>

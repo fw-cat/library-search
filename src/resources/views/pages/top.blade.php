@@ -46,7 +46,7 @@
       @if(!empty($libraies))
       <div class="list-group list-group-flush">
         @foreach($libraies as $library)
-        <a href="{{ route('search.book', ['system_id' => $library['systemid'], 'libkey' => $library['libkey']]) }}" class="list-group-item">
+        <a href="{{ route('search.book', ['system_id' => $library['systemid'], 'libkey' => $library['libkey'], 'libname' => $library['formal']]) }}" class="list-group-item">
           {{ $library['formal'] }}
         </a>
         @endforeach
@@ -120,7 +120,7 @@
             content: `
 <div class="box">
   <p>施設名：<strong>${library['formal']}</strong></p>
-  <a href="/system/${library['systemid']}/libary/${library['libkey']}/book">ここを選択</a>
+  <a href="/system/${library['systemid']}/libary/${library['libkey']}/${library['formal']}/book">ここを選択</a>
 </div>`
           });
 

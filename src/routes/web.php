@@ -10,6 +10,6 @@ Route::get('/', [TopController::class, "top"])->name("top");
 Route::get('/tmp/image/{isbn}', [BookImageController::class, "image"])->name("book.image");
 
 Route::get('/search/zip', [LibrarySearchController::class, "zip"])->name("search.zip");
-Route::get('/system/{system_id}/libary/{libkey}/book/', [BookSearchController::class, "search"])->name("search.book");
+Route::get('/system/{system_id}/libary/{libkey}/{libname}/book/', [BookSearchController::class, "search"])->name("search.book");
 
-Route::post('/system/{system_id}/libary/{libkey}/book/', [BookSearchController::class, "result"])->name("search.book.result");
+Route::post('/system/{system_id}/libary/{libkey}/{libname}/book/', [BookSearchController::class, "result"])->name("search.book.result");

@@ -31,6 +31,37 @@ class CalilSearchService {
     return $responce;
   }
 
+  public function books(array $books, string $system_id, string $libkey): bool | array
+  {
+    $isbn = [];
+    foreach ($books as $book) {
+      // ISBNコードがある数だけ
+      if (!empty($book['isbn'])) {
+        $isbn[] = $book['isbn'];
+      }
+    }
+    $isbn = implode(',', $isbn);
+
+    $targetUrl = "{$this->base_url}/check?appKey={$this->appKey}&isbn={$isbn}&systemid={$system_id}&format=json&callback=no";
+    $polling = 0;
+    // ポーリングのチェック
+    do {
+      $responce = file_get_contents($targetUrl);
+      $responce = json_decode($responce, true);
+      $polling = intval($responce['continue']);
+    } while($polling);
+
+    foreach ($responce['books'] as $isbn => $book) {
+      $index = array_search($isbn, $books);
+      if (empty($book[$system_id])) {
+        $books[$index]["status"] = "不明";
+      } else {
+        $books[$index]["status"] = "不明2";
+      }
+    }
+    return $books;
+  }
+
   private function removeCityAfter(string $city): string
   {
     $position = mb_strpos($city, '市');
